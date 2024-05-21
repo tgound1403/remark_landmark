@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".feature.login.view.LoginActivity"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="Login Screen"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15pt"
+            android:textColor="#111111"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:layout_marginTop="50dp"
+            android:id="@+id/editTextId"
+            android:textSize="7pt"
+            android:textColor="#111111"
+            android:textColorHint="#555555"
+            android:hint="Input ID please"
+            android:layout_marginHorizontal="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:inputType="textPassword"
+            android:layout_marginTop="50dp"
+            android:id="@+id/editTextPassword"
+            android:textSize="7pt"
+            android:textColor="#111111"
+            android:textColorHint="#555555"
+            android:hint="Input password please"
+            android:layout_marginHorizontal="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:textStyle="bold"
+            android:text="Login"
+            android:layout_marginTop="40dp"
+            android:layout_marginHorizontal="30dp"
+            android:textSize="8pt"
+            android:textColor="#111111"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="7pt"
+            android:layout_marginTop="20dp"
+            android:textColor="#111111"
+            android:id="@+id/textViewLoginResult"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/frameLayoutProgress"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
+
+</FrameLayout>
