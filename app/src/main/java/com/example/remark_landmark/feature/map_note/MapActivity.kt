@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
@@ -36,10 +35,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mapFragment: SupportMapFragment? = null
     private var db: FirebaseFirestore? = null
 
-    val binhThuan: LatLng = LatLng(11.0, 107.0)
-    val binhDinh: LatLng = LatLng(13.0, 109.0)
-    val giaLai: LatLng = LatLng(14.0, 108.0)
-    val tienGiang: LatLng = LatLng(10.0, 106.0)
+    private val binhThuan: LatLng = LatLng(11.0, 107.0)
+    private val binhDinh: LatLng = LatLng(13.0, 109.0)
+    private val giaLai: LatLng = LatLng(14.0, 108.0)
+    private val tienGiang: LatLng = LatLng(10.0, 106.0)
 
     private val context: Context = this
 
@@ -190,7 +189,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setUpSearch() {
         // initializing our search view.
-        searchView = findViewById(R.id.idSearchView);
+        searchView = findViewById(R.id.idSearchView)
 
         // adding on query listener for our search view.
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
