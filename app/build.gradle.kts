@@ -1,13 +1,40 @@
+buildscript {
+    dependencies {
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
+
+//    secrets {
+//        // Optionally specify a different file name containing your secrets.
+//        // The plugin defaults to "local.properties"
+//        propertiesFileName = "secrets.properties"
+//
+//        // A properties file containing default secret values. This file can be
+//        // checked in version control.
+//        defaultPropertiesFileName = "local.defaults.properties"
+//
+//        // Configure which keys should be ignored by the plugin by providing regular expressions.
+//        // "sdk.dir" is ignored by default.
+//        ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+//        ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+//    }
+
 
 android {
     namespace = "com.example.remark_landmark"
     compileSdk = 34
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.remark_landmark"
@@ -59,4 +86,5 @@ dependencies {
     // For example, add the dependencies for Firebase Authentication and Cloud Firestore
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 }
