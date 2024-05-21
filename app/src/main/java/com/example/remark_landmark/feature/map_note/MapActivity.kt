@@ -41,10 +41,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     val giaLai: LatLng = LatLng(14.0, 108.0)
     val tienGiang: LatLng = LatLng(10.0, 106.0)
 
-    private var hybridMapBtn: Button? = null
-    private var terrainMapBtn: Button? = null
-    private var satelliteMapBtn: Button? = null
-
     private val context: Context = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
