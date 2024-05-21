@@ -145,8 +145,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setUpMap() {
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
-
-        initMapType()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -247,24 +245,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 return false
             }
         })
-    }
-
-    private fun initMapType() {
-        hybridMapBtn = findViewById(R.id.idBtnHybridMap)
-        terrainMapBtn = findViewById(R.id.idBtnTerrainMap)
-        satelliteMapBtn = findViewById(R.id.idBtnSatelliteMap)
-
-        // adding on click listener for buttons.
-        hybridMapBtn!!.setOnClickListener {
-            mMap!!.mapType = GoogleMap.MAP_TYPE_HYBRID
-        }
-
-        terrainMapBtn!!.setOnClickListener {
-            mMap!!.mapType = GoogleMap.MAP_TYPE_TERRAIN
-        }
-
-        satelliteMapBtn!!.setOnClickListener {
-            mMap!!.mapType = GoogleMap.MAP_TYPE_SATELLITE
-        }
     }
 }
