@@ -1,4 +1,4 @@
-package com.example.remark_landmark.feature.login.model
+package com.example.remark_landmark.feature.auth.model
 
 class UserInfoModel {
     var nickname: String = ""

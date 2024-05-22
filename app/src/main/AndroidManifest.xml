@@ -19,15 +19,11 @@
         android:theme="@style/Theme.RemarkLandmark"
         tools:targetApi="31">
         <activity
-            android:name=".feature.map_note.MapActivity"
+            android:name=".feature.map_note.view.MapActivity"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN"/>-->
-<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
-<!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".feature.login.view.LoginActivity"
+            android:name=".feature.auth.view.AuthActivity"
             android:exported="true">
         </activity>
         <activity
@@ -41,7 +37,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="AIzaSyBF053k0P5ARcxG5c6ZmBNa6PpnzSdU62k" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

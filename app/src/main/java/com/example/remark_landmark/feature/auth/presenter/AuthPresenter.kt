@@ -1,28 +1,25 @@
-package com.example.remark_landmark.feature.login.presenter
+package com.example.remark_landmark.feature.auth.presenter
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import android.widget.Toast
-import com.example.remark_landmark.core.util.thread.ThreadUtil
-import com.example.remark_landmark.feature.login.model.UserInfoModel
-import com.example.remark_landmark.feature.login.presenter.controller.LoginController
-import com.example.remark_landmark.feature.login.view.ILoginView
+import com.example.remark_landmark.feature.auth.model.UserInfoModel
+import com.example.remark_landmark.feature.auth.view.IAuthView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class LoginPresenter(var iLoginView: ILoginView) : ILoginPresenter {
+class AuthPresenter(var iAuthView: IAuthView) : IAuthPresenter {
     private lateinit var auth: FirebaseAuth
     override fun clear() {
-        iLoginView.onClear()
+        iAuthView.onClear()
     }
 
     override fun showProgress() {
-        iLoginView.onShowProgress()
+        iAuthView.onShowProgress()
     }
 
     override fun hideProgress() {
-        iLoginView.onHideProgress()
+        iAuthView.onHideProgress()
     }
 
     override fun register(email: String, password: String) {
@@ -58,7 +55,7 @@ class LoginPresenter(var iLoginView: ILoginView) : ILoginPresenter {
                     userInfoModel.age = 22
 
                     hideProgress()
-                    iLoginView.onLoginSuccess(
+                    iAuthView.onLoginSuccess(
                         nickname = userInfoModel.nickname,
                         age = userInfoModel.age
                     )

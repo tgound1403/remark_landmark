@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.remark_landmark.feature.login.view.LoginActivity
-import com.example.remark_landmark.feature.map_note.MapActivity
+import com.example.remark_landmark.feature.auth.view.AuthActivity
+import com.example.remark_landmark.feature.map_note.view.MapActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         findViewById<Button>(R.id.loginBtn).setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)
         }
     }

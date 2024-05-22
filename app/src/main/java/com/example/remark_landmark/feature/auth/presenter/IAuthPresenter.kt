@@ -1,6 +1,6 @@
-package com.example.remark_landmark.feature.login.presenter
+package com.example.remark_landmark.feature.auth.presenter
 
-interface ILoginPresenter {
+interface IAuthPresenter {
     fun clear()
     fun showProgress()
     fun hideProgress()

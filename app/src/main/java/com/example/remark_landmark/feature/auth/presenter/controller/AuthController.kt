@@ -1,8 +1,8 @@
-package com.example.remark_landmark.feature.login.presenter.controller
+package com.example.remark_landmark.feature.auth.presenter.controller
 
 import com.example.remark_landmark.core.util.thread.ThreadUtil
 
-object LoginController {
+object AuthController {
     interface LoginControllerDelegate {
         fun onSuccess(response: String)
         fun onFailed(error: String)

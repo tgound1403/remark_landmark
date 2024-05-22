@@ -1,4 +1,4 @@
-package com.example.remark_landmark.feature.login.view
+package com.example.remark_landmark.feature.auth.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,22 +9,22 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.remark_landmark.R
-import com.example.remark_landmark.feature.login.presenter.ILoginPresenter
-import com.example.remark_landmark.feature.login.presenter.LoginPresenter
-import com.example.remark_landmark.feature.map_note.MapActivity
+import com.example.remark_landmark.feature.auth.presenter.IAuthPresenter
+import com.example.remark_landmark.feature.auth.presenter.AuthPresenter
+import com.example.remark_landmark.feature.map_note.view.MapActivity
 
-class LoginActivity : AppCompatActivity(), ILoginView{
+class AuthActivity : AppCompatActivity(), IAuthView{
     private lateinit var editTextId : EditText
     private lateinit var editTextPassword : EditText
     private lateinit var loginBtn : Button
     private lateinit var textViewLoginResult : TextView
     private lateinit var frameLayoutProgress : FrameLayout
 
-    lateinit var  iLoginPresenter: ILoginPresenter
+    lateinit var  iLoginPresenter: IAuthPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_auth)
         initPresenter()
         findView()
         setListener()
@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity(), ILoginView{
     }
 
     private fun initPresenter() {
-        iLoginPresenter = LoginPresenter(iLoginView = this)
+        iLoginPresenter = AuthPresenter(iAuthView = this)
     }
 
     private fun setListener() {
@@ -55,6 +55,14 @@ class LoginActivity : AppCompatActivity(), ILoginView{
 
     override fun onHideProgress() {
         frameLayoutProgress.visibility = View.GONE
+    }
+
+    override fun onChooseLogin() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChooseRegister() {
+        TODO("Not yet implemented")
     }
 
     override fun onShowProgress() {
