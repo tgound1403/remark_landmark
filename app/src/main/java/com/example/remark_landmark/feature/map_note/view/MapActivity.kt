@@ -6,8 +6,11 @@ import android.graphics.Canvas
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
@@ -25,6 +28,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.io.IOException
 
 
@@ -34,17 +40,44 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     var searchView: SearchView? = null
     private var mMap: GoogleMap? = null
     private var mapFragment: SupportMapFragment? = null
+    private lateinit var openDialogBtn: Button
+    private lateinit var addNoteBtn: Button
+    private lateinit var noteContent: EditText
+    private lateinit var addNoteDialog: CardView
+    private lateinit var auth: FirebaseAuth
 
     private val context: Context = this
     lateinit var iMapPresenter: IMapPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         setContentView(R.layout.activity_map)
         setUpSearch()
         setUpMap()
         initPresenter()
-        iMapPresenter.fetchMarkers()
+        findView()
+        setListener()
+    }
+
+    private fun setListener() {
+        openDialogBtn.setOnClickListener {
+            addNoteDialog.visibility = View.VISIBLE
+            Log.d("Check tap button", "setListener on addNoteBtn")
+        }
+        addNoteBtn.setOnClickListener {
+            val note = noteContent.text.toString()
+            val currentUser = auth.currentUser
+            iMapPresenter.createMarker(owner = currentUser?.email ?: "", note = note, lat = 0.0, long = 0.0)
+            addNoteDialog.visibility = View.GONE
+        }
+    }
+
+    private fun findView() {
+        openDialogBtn = findViewById(R.id.openDialogBtn)
+        addNoteBtn = findViewById(R.id.addNoteBtn)
+        noteContent = findViewById(R.id.markerNote)
+        addNoteDialog = findViewById(R.id.addNoteDialog)
     }
 
     private fun initPresenter() {
@@ -69,20 +102,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
 //            ).show()
 //            false
 //        }
+        iMapPresenter.fetchMarkers()
     }
 
-    private fun generateNoteMarker(note: String, map: GoogleMap, location: LatLng) {
+    private fun generateNoteMarker(map: GoogleMap, markerInfoModel: MarkerInfoModel) {
         val markerView =
             (context.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
                 R.layout.marker_layout,
                 null
             )
-        val textView = markerView.findViewById<TextView>(R.id.markerText)
+        val ownerText = markerView.findViewById<TextView>(R.id.markerOwner)
+        val noteText = markerView.findViewById<TextView>(R.id.markerNote)
         val cardView = markerView.findViewById<CardView>(R.id.markerCardView)
-        textView.text = note
+        val location = LatLng(markerInfoModel.lat, markerInfoModel.long)
+        noteText.text = markerInfoModel.note
+        ownerText.text = markerInfoModel.owner
 
         val icon = BitmapDescriptorFactory.fromBitmap(viewToBitmap(cardView))
-        val markerOptions = MarkerOptions().position(location).icon(icon).title(note)
+        val markerOptions = MarkerOptions().position(location).icon(icon)
         map.addMarker(markerOptions)
     }
 
@@ -151,11 +188,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         })
     }
 
-    override fun onFetchMarkerSuccess(markers: List<MarkerInfoModel>) {
+    private fun renderNotes(markers: List<MarkerInfoModel>) {
+
         for (marker in markers) {
             val location = LatLng(marker.lat, marker.long)
-            mMap!!.addMarker(MarkerOptions().position(location))
-            generateNoteMarker(marker.note, mMap!!, location)
+//            mMap!!.addMarker(MarkerOptions().position(location))
+            generateNoteMarker(mMap!!, marker)
         }
         mMap!!.moveCamera(
             CameraUpdateFactory.newLatLng(
@@ -166,9 +204,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
             )
         )
     }
+    override fun onFetchMarkerSuccess(markers: List<MarkerInfoModel>) {
+        renderNotes(markers)
+    }
 
     override fun onCreateMarkerSuccess() {
-        TODO("Not yet implemented")
+        iMapPresenter.fetchMarkers()
     }
 
     override fun onFoundMarker() {
@@ -179,7 +220,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         TODO("Not yet implemented")
     }
 
-    override fun onGenerateMarker(note: String, map: GoogleMap, location: LatLng) {
-        TODO("Not yet implemented")
+    override fun onShowDialog() {
+        addNoteDialog.visibility = View.VISIBLE
     }
 }

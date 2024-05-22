@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/markerCardView"
         android:layout_width="268dp"
-        android:layout_height="106dp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,24 +19,37 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="6dp">
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="4dp">
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@android:drawable/ic_menu_mylocation" />
+                app:srcCompat="@android:drawable/ic_menu_info_details" />
 
-            <TextView
-                android:id="@+id/markerText"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Text from tools text"
-                android:text="Text from android text"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/markerOwner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="owner name"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/markerNote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="note content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
 
 
         </LinearLayout>

@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:text="Login Screen"
+            android:text="Remark Landmark"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_width="wrap_content"

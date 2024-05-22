@@ -9,5 +9,5 @@ interface IMapView {
     fun onCreateMarkerSuccess()
     fun onFoundMarker()
     fun onSelectMarker()
-    fun onGenerateMarker(note: String, map: GoogleMap, location: LatLng)
+    fun onShowDialog()
 }
