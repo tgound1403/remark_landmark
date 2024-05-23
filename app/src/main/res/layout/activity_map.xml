@@ -34,32 +34,49 @@
         tools:layout_editor_absoluteX="10dp" />
 
     <LinearLayout
-        style="?android:attr/buttonBarStyle"
-        android:gravity="center"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/map">
 
-        <Button
-            android:id="@+id/openDialogBtn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="Add note here"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@+id/map"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/map">
+
+            <Button
+                android:id="@+id/openDialogBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="Add note here"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="@+id/map"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/getLocationBtn"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Where am I?"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="8pt" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/getLocationBtn"
+            android:id="@+id/logoutBtn"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Where am I?"
+            android:text="Logout"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="8pt" />

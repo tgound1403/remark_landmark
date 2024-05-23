@@ -3,6 +3,7 @@ package com.example.remark_landmark.feature.map_note.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -23,8 +24,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
+import com.example.remark_landmark.MainActivity
 import com.example.remark_landmark.R
 import com.example.remark_landmark.feature.auth.presenter.AuthPresenter
+import com.example.remark_landmark.feature.auth.view.ComposeAuthActivity
 import com.example.remark_landmark.feature.map_note.model.MarkerInfoModel
 import com.example.remark_landmark.feature.map_note.presenter.IMapPresenter
 import com.example.remark_landmark.feature.map_note.presenter.MapPresenter
@@ -45,8 +48,6 @@ import java.io.IOException
 
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
-    // creating a variable
-    // for search view.
     var searchView: SearchView? = null
     private var mMap: GoogleMap? = null
     private var userLocation: Location? = null
@@ -55,6 +56,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     private lateinit var getLocationBtn: Button
     private lateinit var closeDialogBtn: ImageButton
     private lateinit var addNoteBtn: Button
+    private lateinit var logoutBtn: Button
     private lateinit var noteContent: EditText
     private lateinit var addNoteDialog: CardView
     private lateinit var auth: FirebaseAuth
@@ -106,11 +108,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
                         MarkerOptions().position(userLatLong)
                             .title("Your current location")
                     )
-                    mMap!!.moveCamera(
-                        CameraUpdateFactory.newLatLng(
-                            userLatLong
-                        )
-                    )
+                    mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 10f))
                 }
             }
     }
@@ -161,6 +159,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         getLocationBtn.setOnClickListener {
             getLocation()
         }
+        logoutBtn.setOnClickListener {
+            iMapPresenter.logout()
+        }
     }
 
     private fun findView() {
@@ -168,6 +169,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         closeDialogBtn = findViewById(R.id.closeDialogBtn)
         openDialogBtn = findViewById(R.id.openDialogBtn)
         addNoteBtn = findViewById(R.id.addNoteBtn)
+        logoutBtn = findViewById(R.id.logoutBtn)
         noteContent = findViewById(R.id.markerNote)
         addNoteDialog = findViewById(R.id.addNoteDialog)
     }
@@ -225,11 +227,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
                 // location name from search view.
                 val location = searchView!!.query.toString()
 
-
                 // below line is to create a list of address
                 // where we will store the list of all address.
                 var addressList: List<Address>? = null
-
 
                 // checking if the entered location is null or not.
                 if (location.isNotEmpty()) {
@@ -247,15 +247,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
                     // from our list a first position.
                     val address = addressList?.get(0) ?: return false
 
-
                     // on below line we are creating a variable for our location
                     // where we will add our locations latitude and longitude.
                     val latLng = LatLng(address.latitude, address.longitude)
 
-
                     // on below line we are adding marker to that position.
                     mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-
 
                     // below line is to animate camera to that position.
                     mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
@@ -270,15 +267,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     }
 
     private fun renderNotes(markers: List<MarkerInfoModel>) {
-
         for (marker in markers) {
             generateNoteMarker(mMap!!, marker)
         }
         mMap!!.moveCamera(
             CameraUpdateFactory.newLatLng(
                 LatLng(
-                    markers.first().lat,
-                    markers.first().long
+                    userLocation?.latitude ?:markers.first().lat,
+                    userLocation?.longitude ?: markers.first().long
                 )
             )
         )
@@ -302,5 +298,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
 
     override fun onShowDialog() {
         addNoteDialog.visibility = View.VISIBLE
+    }
+
+    override fun onGetLocationSuccess(location: Location?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLogout() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 }

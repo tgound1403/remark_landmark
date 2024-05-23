@@ -4,13 +4,21 @@ import android.content.ContentValues
 import android.util.Log
 import com.example.remark_landmark.feature.map_note.model.MarkerInfoModel
 import com.example.remark_landmark.feature.map_note.view.IMapView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.random.Random
+import com.google.firebase.ktx.Firebase
 
 class MapPresenter(var iMapView: IMapView) : IMapPresenter {
     private var db: FirebaseFirestore? = null
     private fun useFireStore() {
         db = FirebaseFirestore.getInstance()
+    }
+
+    override fun searchMarkers(searchValue: String) : List<MarkerInfoModel> {
+        useFireStore()
+        val documentReference = db!!.collection("notes")
+        documentReference.whereEqualTo("note", searchValue)
+        return ArrayList()
     }
 
     override fun fetchMarkers() {
@@ -61,7 +69,7 @@ class MapPresenter(var iMapView: IMapView) : IMapPresenter {
             "owner" to owner,
         )
 
-// Add a new document with a generated ID
+        // Add a new document with a generated ID
         db?.collection("notes")
             ?.add(markerNote)
             ?.addOnSuccessListener { documentReference ->
@@ -72,7 +80,8 @@ class MapPresenter(var iMapView: IMapView) : IMapPresenter {
             }
     }
 
-    override fun getCurrentLocation() {
-        TODO("Not yet implemented")
+    override fun logout() {
+        Firebase.auth.signOut()
+        iMapView.onLogout()
     }
 }
