@@ -15,15 +15,7 @@ class MapPresenter(var iMapView: IMapView) : IMapPresenter {
 
     override fun fetchMarkers() {
         useFireStore()
-        val binhThuan = MarkerInfoModel(11.0, 107.0, "Hello from dattd & linhnt", "dattd linhnt")
-        val binhDinh = MarkerInfoModel(13.0, 109.0, "Hello from tienp", "tienp")
-        val giaLai = MarkerInfoModel(14.0, 108.0, "Hello from namtt", "namtt")
-        val tienGiang = MarkerInfoModel(10.0, 106.0, "Hello from duongnt", "duongnt")
-
-        val defaultLocationList: ArrayList<MarkerInfoModel> = ArrayList()
-        defaultLocationList.addAll(setOf(binhThuan, binhDinh, giaLai, tienGiang))
-
-        val documentReference = db!!.collection("locations")
+        val documentReference = db!!.collection("notes")
 
         documentReference.addSnapshotListener { snapshot, e ->
             if (e != null) {
@@ -35,7 +27,6 @@ class MapPresenter(var iMapView: IMapView) : IMapPresenter {
                 Log.d(ContentValues.TAG, "Current data: ${snapshot.documents}")
                 val markerList: ArrayList<MarkerInfoModel> = ArrayList()
 
-                markerList.addAll(defaultLocationList)
                 try {
                     for (document in snapshot.documents) {
                         Log.d(
@@ -64,8 +55,8 @@ class MapPresenter(var iMapView: IMapView) : IMapPresenter {
         useFireStore()
         // Create a new user with a first, middle, and last name
         val markerNote = hashMapOf(
-            "lat" to Random.nextDouble(),
-            "long" to Random.nextDouble(),
+            "lat" to lat,
+            "long" to long,
             "note" to note,
             "owner" to owner,
         )

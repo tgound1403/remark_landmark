@@ -1,26 +1,36 @@
 package com.example.remark_landmark.feature.map_note.view
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.location.Address
 import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import com.example.remark_landmark.R
 import com.example.remark_landmark.feature.auth.presenter.AuthPresenter
 import com.example.remark_landmark.feature.map_note.model.MarkerInfoModel
 import com.example.remark_landmark.feature.map_note.presenter.IMapPresenter
 import com.example.remark_landmark.feature.map_note.presenter.MapPresenter
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -39,17 +49,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     // for search view.
     var searchView: SearchView? = null
     private var mMap: GoogleMap? = null
+    private var userLocation: Location? = null
     private var mapFragment: SupportMapFragment? = null
     private lateinit var openDialogBtn: Button
+    private lateinit var getLocationBtn: Button
+    private lateinit var closeDialogBtn: ImageButton
     private lateinit var addNoteBtn: Button
     private lateinit var noteContent: EditText
     private lateinit var addNoteDialog: CardView
     private lateinit var auth: FirebaseAuth
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
 
     private val context: Context = this
     lateinit var iMapPresenter: IMapPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         setContentView(R.layout.activity_map)
@@ -60,20 +76,96 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         setListener()
     }
 
+    private fun getLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        } else {
+            getLastKnownLocation()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLastKnownLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                location?.let {
+                    userLocation = it
+                    val userLatLong = LatLng(it.latitude, it.longitude)
+                    mMap!!.addMarker(
+                        MarkerOptions().position(userLatLong)
+                            .title("Your current location")
+                    )
+                    mMap!!.moveCamera(
+                        CameraUpdateFactory.newLatLng(
+                            userLatLong
+                        )
+                    )
+                }
+            }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                getLastKnownLocation()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    REQUEST_LOCATION_PERMISSION
+                )
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1
+    }
+
     private fun setListener() {
         openDialogBtn.setOnClickListener {
             addNoteDialog.visibility = View.VISIBLE
-            Log.d("Check tap button", "setListener on addNoteBtn")
+        }
+        closeDialogBtn.setOnClickListener {
+            addNoteDialog.visibility = View.GONE
         }
         addNoteBtn.setOnClickListener {
             val note = noteContent.text.toString()
             val currentUser = auth.currentUser
-            iMapPresenter.createMarker(owner = currentUser?.email ?: "", note = note, lat = 0.0, long = 0.0)
+            Log.d("MapActivity", "${userLocation?.latitude}, ${userLocation?.longitude}")
+
+            iMapPresenter.createMarker(
+                owner = currentUser?.email ?: "",
+                note = note,
+                lat = userLocation?.latitude ?: 0.0,
+                long = userLocation?.longitude ?: 0.0
+            )
             addNoteDialog.visibility = View.GONE
+        }
+        getLocationBtn.setOnClickListener {
+            getLocation()
         }
     }
 
     private fun findView() {
+        getLocationBtn = findViewById(R.id.getLocationBtn)
+        closeDialogBtn = findViewById(R.id.closeDialogBtn)
         openDialogBtn = findViewById(R.id.openDialogBtn)
         addNoteBtn = findViewById(R.id.addNoteBtn)
         noteContent = findViewById(R.id.markerNote)
@@ -91,17 +183,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        // adding on click listener to marker of google maps.
-//        mMap!!.setOnMarkerClickListener { marker -> // on marker click we are getting the title of our marker
-//            // which is clicked and displaying it in a toast message.
-//            val markerName = marker.title
-//            Toast.makeText(
-//                this@MapActivity,
-//                "Clicked location is $markerName",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//            false
-//        }
         iMapPresenter.fetchMarkers()
     }
 
@@ -191,19 +272,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     private fun renderNotes(markers: List<MarkerInfoModel>) {
 
         for (marker in markers) {
-            val location = LatLng(marker.lat, marker.long)
-//            mMap!!.addMarker(MarkerOptions().position(location))
             generateNoteMarker(mMap!!, marker)
         }
         mMap!!.moveCamera(
             CameraUpdateFactory.newLatLng(
                 LatLng(
-                    markers.last().lat,
-                    markers.last().long
+                    markers.first().lat,
+                    markers.first().long
                 )
             )
         )
     }
+
     override fun onFetchMarkerSuccess(markers: List<MarkerInfoModel>) {
         renderNotes(markers)
     }

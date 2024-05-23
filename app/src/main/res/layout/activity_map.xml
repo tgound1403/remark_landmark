@@ -33,19 +33,42 @@
         app:queryHint="Search"
         tools:layout_editor_absoluteX="10dp" />
 
-    <Button
-        android:id="@+id/openDialogBtn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:gravity="center"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add note here"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="@+id/map"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/map">
+
+        <Button
+            android:id="@+id/openDialogBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="Add note here"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="@+id/map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/getLocationBtn"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Where am I?"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="8pt" />
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/addNoteDialog"
-        android:layout_width="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:visibility="gone"
@@ -54,6 +77,17 @@
         app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+            <ImageButton
+                android:id="@+id/closeDialogBtn"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+                android:layout_width="24dp"
+                android:layout_height="24dp"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,27 +99,26 @@
                 android:id="@+id/markerNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="50dp"
                 android:hint="Insert your note"
-                android:inputType="textPassword"
+                android:inputType="text"
                 android:textColor="#111111"
                 android:textColorHint="#555555"
                 android:textSize="7pt" />
 
-            <Button
-                android:id="@+id/addNoteBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="40dp"
-                android:background="@color/white"
-                android:text="Add note"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="8pt"
-                android:textStyle="bold" />
+                <Button
+                    android:id="@+id/addNoteBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="Add note"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="8pt"
+                    android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -73,6 +73,7 @@
             android:id="@+id/switchAuthBtn"
             android:text="Not a member? Register"
             android:textAllCaps="false"
+            style="?android:attr/buttonBarButtonStyle"
             android:backgroundTint="@color/white"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="30dp"
