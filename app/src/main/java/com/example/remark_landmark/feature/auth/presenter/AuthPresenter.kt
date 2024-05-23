@@ -32,6 +32,7 @@ class AuthPresenter(var iAuthView: IAuthView) : IAuthPresenter {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
+                    iAuthView.onAuthSuccess()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)

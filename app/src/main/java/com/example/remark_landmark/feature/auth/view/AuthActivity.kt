@@ -22,7 +22,7 @@ class AuthActivity : AppCompatActivity(), IAuthView {
     private lateinit var textViewLoginResult: TextView
     private lateinit var frameLayoutProgress: FrameLayout
 
-    lateinit var iLoginPresenter: IAuthPresenter
+    lateinit var iAuthPresenter: IAuthPresenter
 
     private var isLogin = true
 
@@ -45,18 +45,18 @@ class AuthActivity : AppCompatActivity(), IAuthView {
     }
 
     private fun initPresenter() {
-        iLoginPresenter = AuthPresenter(iAuthView = this)
+        iAuthPresenter = AuthPresenter(iAuthView = this)
     }
 
     private fun setListener() {
         submitBtn.setOnClickListener {
             if (isLogin) {
-                iLoginPresenter.login(
+                iAuthPresenter.login(
                     email = editTextId.text.toString().trim(),
                     password = editTextPassword.text.toString().trim()
                 )
             } else {
-                iLoginPresenter.register(
+                iAuthPresenter.register(
                     email = editTextId.text.toString().trim(),
                     password = editTextPassword.text.toString().trim(),
                     rePassword = editTextRePassword.text.toString().trim()

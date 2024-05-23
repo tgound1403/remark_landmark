@@ -24,9 +24,12 @@
         tools:targetApi="31">
         <activity
             android:name=".feature.map_note.view.MapActivity"
-            android:exported="true"/>
+            android:exported="false"/>
         <activity
             android:name=".feature.auth.view.AuthActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".feature.auth.view.ComposeAuthActivity"
             android:exported="true"/>
         <activity
             android:name=".MainActivity"

@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.remark_landmark.feature.auth.view.AuthActivity
+import com.example.remark_landmark.feature.auth.view.ComposeAuthActivity
 import com.example.remark_landmark.feature.map_note.view.MapActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -29,11 +30,8 @@ class MainActivity : AppCompatActivity() {
         auth = Firebase.auth
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        setContentView(R.layout.activity_main)
-        findViewById<Button>(R.id.loginBtn).setOnClickListener {
-            val intent = Intent(this, AuthActivity::class.java)
-            startActivity(intent)
-        }
+        val intent = Intent(this, ComposeAuthActivity::class.java)
+        startActivity(intent)
     }
 
     public override fun onStart() {
