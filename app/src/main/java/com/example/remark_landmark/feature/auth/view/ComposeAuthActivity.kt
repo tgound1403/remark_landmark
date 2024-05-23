@@ -46,7 +46,7 @@ class ComposeAuthActivity : ComponentActivity(), IAuthView {
 
     override fun onHideLoading() {
         setContent {
-            AuthScreen(iAuthPresenter,"")
+            AuthScreen(iAuthPresenter, "")
         }
     }
 
@@ -142,6 +142,7 @@ fun AuthScreen(iAuthPresenter: IAuthPresenter, error: String) {
 
         val isEnabled = email.isNotEmpty() && password.isNotEmpty()
         Button(
+            enabled = isEnabled,
             onClick = {
                 if (isEnabled) {
                     if (isLogin) {
