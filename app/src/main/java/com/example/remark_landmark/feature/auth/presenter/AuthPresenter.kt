@@ -10,21 +10,22 @@ import com.google.firebase.ktx.Firebase
 
 class AuthPresenter(var iAuthView: IAuthView) : IAuthPresenter {
     private lateinit var auth: FirebaseAuth
-    override fun clear() {
-        iAuthView.onClear()
+
+    override fun showLoading() {
+        iAuthView.onShowLoading()
     }
 
-    override fun showProgress() {
-        iAuthView.onShowProgress()
+    override fun hideLoading() {
+        iAuthView.onHideLoading()
     }
 
-    override fun hideProgress() {
-        iAuthView.onHideProgress()
-    }
-
-    override fun register(email: String, password: String) {
-        clear()
-        showProgress()
+    override fun register(email: String, password: String, rePassword: String) {
+        showLoading()
+        if (password != rePassword) {
+            iAuthView.onAuthError("Password not match, please try again")
+            hideLoading()
+            return
+        }
         auth = Firebase.auth
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -34,15 +35,15 @@ class AuthPresenter(var iAuthView: IAuthView) : IAuthPresenter {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    iAuthView.onAuthError(task.exception?.message.toString())
                 }
-                hideProgress()
+                hideLoading()
             }
     }
 
 
     override fun login(email: String, password: String) {
-        clear()
-        showProgress()
+        showLoading()
         auth = Firebase.auth
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -54,16 +55,14 @@ class AuthPresenter(var iAuthView: IAuthView) : IAuthPresenter {
                     userInfoModel.nickname = user!!.email.toString()
                     userInfoModel.age = 22
 
-                    hideProgress()
-                    iAuthView.onLoginSuccess(
-                        nickname = userInfoModel.nickname,
-                        age = userInfoModel.age
-                    )
+                    hideLoading()
+                    iAuthView.onAuthSuccess()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    iAuthView.onAuthError(task.exception?.message.toString())
                 }
-                hideProgress()
+                hideLoading()
             }
     }
 }
