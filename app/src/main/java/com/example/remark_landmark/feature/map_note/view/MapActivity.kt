@@ -46,7 +46,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.io.IOException
 
-
+// Activity to manage and display map with markers and handle location services
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     var searchView: SearchView? = null
     private var mMap: GoogleMap? = null
@@ -60,24 +60,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
     private lateinit var noteContent: EditText
     private lateinit var addNoteDialog: CardView
     private lateinit var auth: FirebaseAuth
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
 
     private val context: Context = this
     lateinit var iMapPresenter: IMapPresenter
 
+    // Lifecycle method called when the activity is created
     override fun onCreate(savedInstanceState: Bundle?) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
         setContentView(R.layout.activity_map)
-        setUpSearch()
-        setUpMap()
-        initPresenter()
-        findView()
-        setListener()
+        setUpSearch()  // Set up the search functionality
+        setUpMap()  // Initialize the map
+        initPresenter()  // Initialize the presenter
+        findView()  // Bind UI components
+        setListener()  // Set listeners for UI components
     }
 
+    // Method to request user's location
     private fun getLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -93,7 +95,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
                 REQUEST_LOCATION_PERMISSION
             )
         } else {
-            getLastKnownLocation()
+            getLastKnownLocation()  // Get the last known location if permission is granted
         }
     }
 
@@ -113,6 +115,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
             }
     }
 
+    // Handle the result of the location permission request
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -136,6 +139,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         private const val REQUEST_LOCATION_PERMISSION = 1
     }
 
+    // Set up listeners for the buttons and other UI components
     private fun setListener() {
         openDialogBtn.setOnClickListener {
             addNoteDialog.visibility = View.VISIBLE
@@ -164,6 +168,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         }
     }
 
+    // Bind UI components to their respective views
     private fun findView() {
         getLocationBtn = findViewById(R.id.getLocationBtn)
         closeDialogBtn = findViewById(R.id.closeDialogBtn)
@@ -174,20 +179,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         addNoteDialog = findViewById(R.id.addNoteDialog)
     }
 
+    // Initialize the presenter
     private fun initPresenter() {
         iMapPresenter = MapPresenter(iMapView = this)
     }
 
+    // Set up the map fragment and async load the map
     private fun setUpMap() {
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
     }
 
+    // Callback when the map is ready to be used
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        iMapPresenter.fetchMarkers()
+        with(googleMap) {
+            mMap = this
+            iMapPresenter.fetchMarkers()  // Fetch existing markers to display on the map
+        }
     }
 
+    // Generate a custom marker with note information
     private fun generateNoteMarker(map: GoogleMap, markerInfoModel: MarkerInfoModel) {
         val markerView =
             (context.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
@@ -206,6 +217,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         map.addMarker(markerOptions)
     }
 
+    // Convert a view to a bitmap for custom marker icon
     private fun viewToBitmap(view: View): Bitmap {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val bitmap =
@@ -216,45 +228,41 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         return bitmap
     }
 
+    // Set up the search functionality for the map
     private fun setUpSearch() {
-        // initializing our search view.
+        // Initializing the search view
         searchView = findViewById(R.id.idSearchView)
 
-        // adding on query listener for our search view.
+        // Adding query listener for the search view
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                // on below line we are getting the
-                // location name from search view.
+                // Get the location name from search view
                 val location = searchView!!.query.toString()
 
-                // below line is to create a list of address
-                // where we will store the list of all address.
+                // Create a list of addresses to store the list of all addresses
                 var addressList: List<Address>? = null
 
-                // checking if the entered location is null or not.
+                // Check if the entered location is not empty
                 if (location.isNotEmpty()) {
-                    // on below line we are creating and initializing a geo coder.
+                    // Create and initialize a geocoder
                     val geocoder = Geocoder(this@MapActivity)
                     try {
-                        // on below line we are getting location from the
-                        // location name and adding that location to address list.
+                        // Get location from the location name and add it to address list
                         addressList = geocoder.getFromLocationName(location, 1)
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
 
-                    // on below line we are getting the location
-                    // from our list a first position.
+                    // Get the location from the list at the first position
                     val address = addressList?.get(0) ?: return false
 
-                    // on below line we are creating a variable for our location
-                    // where we will add our locations latitude and longitude.
+                    // Create a variable for the location's latitude and longitude
                     val latLng = LatLng(address.latitude, address.longitude)
 
-                    // on below line we are adding marker to that position.
+                    // Add marker to that position
                     mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
 
-                    // below line is to animate camera to that position.
+                    // Animate camera to that position
                     mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
                 }
                 return false
@@ -266,6 +274,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         })
     }
 
+    // Render the notes on the map
     private fun renderNotes(markers: List<MarkerInfoModel>) {
         for (marker in markers) {
             generateNoteMarker(mMap!!, marker)
@@ -280,10 +289,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         )
     }
 
+    // Callback for successfully fetching markers
     override fun onFetchMarkerSuccess(markers: List<MarkerInfoModel>) {
         renderNotes(markers)
     }
 
+    // Callback for successfully creating a marker
     override fun onCreateMarkerSuccess() {
         iMapPresenter.fetchMarkers()
     }
@@ -304,6 +315,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, IMapView {
         TODO("Not yet implemented")
     }
 
+    // Callback for logout action
     override fun onLogout() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)

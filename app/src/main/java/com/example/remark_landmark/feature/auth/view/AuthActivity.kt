@@ -13,7 +13,9 @@ import com.example.remark_landmark.feature.auth.presenter.IAuthPresenter
 import com.example.remark_landmark.feature.auth.presenter.AuthPresenter
 import com.example.remark_landmark.feature.map_note.view.MapActivity
 
+// Activity class for handling authentication views and interactions
 class AuthActivity : AppCompatActivity(), IAuthView {
+    // UI components
     private lateinit var editTextId: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var editTextRePassword: EditText
@@ -22,18 +24,22 @@ class AuthActivity : AppCompatActivity(), IAuthView {
     private lateinit var textViewLoginResult: TextView
     private lateinit var frameLayoutProgress: FrameLayout
 
+    // Presenter instance
     lateinit var iAuthPresenter: IAuthPresenter
 
+    // Flag to track if the current mode is login or registration
     private var isLogin = true
 
+    // Initialize the activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-        initPresenter()
-        findView()
-        setListener()
+        initPresenter() // Initialize the presenter
+        findView() // Find and bind the UI components
+        setListener() // Set listeners for buttons
     }
 
+    // Bind UI components to their respective views
     private fun findView() {
         textViewLoginResult = findViewById(R.id.textViewLoginResult)
         editTextPassword = findViewById(R.id.editTextPassword)
@@ -44,18 +50,22 @@ class AuthActivity : AppCompatActivity(), IAuthView {
         frameLayoutProgress = findViewById(R.id.frameLayoutProgress)
     }
 
+    // Initialize the presenter
     private fun initPresenter() {
         iAuthPresenter = AuthPresenter(iAuthView = this)
     }
 
+    // Set listeners for buttons to handle authentication actions
     private fun setListener() {
         submitBtn.setOnClickListener {
             if (isLogin) {
+                // Handle login
                 iAuthPresenter.login(
                     email = editTextId.text.toString().trim(),
                     password = editTextPassword.text.toString().trim()
                 )
             } else {
+                // Handle registration
                 iAuthPresenter.register(
                     email = editTextId.text.toString().trim(),
                     password = editTextPassword.text.toString().trim(),
@@ -64,11 +74,13 @@ class AuthActivity : AppCompatActivity(), IAuthView {
             }
         }
         switchAuthBtn.setOnClickListener {
+            // Toggle between login and registration mode
             isLogin = !isLogin
             changeUI(isLogin)
         }
     }
 
+    // Update UI elements based on the current mode (login or registration)
     private fun changeUI(isLogin: Boolean) {
         if (isLogin) {
             editTextRePassword.visibility = View.GONE
@@ -85,19 +97,23 @@ class AuthActivity : AppCompatActivity(), IAuthView {
         }
     }
 
+    // Hide loading indicator
     override fun onHideLoading() {
         frameLayoutProgress.visibility = View.GONE
     }
 
+    // Show loading indicator
     override fun onShowLoading() {
         frameLayoutProgress.visibility = View.VISIBLE
     }
 
+    // Handle successful authentication and navigate to the map activity
     override fun onAuthSuccess() {
         val intent = Intent(this, MapActivity::class.java)
         startActivity(intent)
     }
 
+    // Handle authentication error and display error message
     override fun onAuthError(error: String) {
         textViewLoginResult.visibility = View.VISIBLE
         textViewLoginResult.text = error
