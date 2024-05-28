@@ -4,6 +4,10 @@
 ## Project Overview
 **Landmark Remark** is a mobile application that allows users to save location-based notes on a map. Users can see their current location, save notes at their location, view notes saved by themselves and others, and search for notes based on text or user-name.
 
+## Test account
+email: duong@gmail.com
+password: duong123
+
 ## Technology Stack
 - **Language**: Kotlin
 - **Target API Level**: 26 (minimum)
